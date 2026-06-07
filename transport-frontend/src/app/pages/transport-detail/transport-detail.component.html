@@ -1,0 +1,116 @@
+<div class="detail-container" *ngIf="transport; else loading">
+
+  <!-- Header -->
+  <div class="detail-header">
+    <button mat-icon-button routerLink="/" matTooltip="Назад">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="header-info">
+      <h1>{{ transport.origin }} → {{ transport.destination }}</h1>
+      <div class="header-meta">
+        <span class="transport-id">#{{ transport.id }}</span>
+        <app-status-badge [status]="transport.status"></app-status-badge>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button mat-stroked-button (click)="loadAll()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Transport dates -->
+  <mat-card class="dates-card">
+    <div class="dates-grid">
+      <div class="date-item">
+        <div class="date-label">Планирано тръгване</div>
+        <div class="date-value">{{ formatDate(transport.plannedDeparture) }}</div>
+      </div>
+      <div class="date-item">
+        <div class="date-label">Планирано пристигане</div>
+        <div class="date-value">{{ formatDate(transport.plannedArrival) }}</div>
+      </div>
+      <div class="date-item">
+        <div class="date-label">Тръгване</div>
+        <div class="date-value" [class.filled]="transport.actualDeparture">{{ formatDate(transport.actualDeparture) }}</div>
+      </div>
+      <div class="date-item">
+        <div class="date-label">Пристигане</div>
+        <div class="date-value" [class.filled]="transport.actualArrival">{{ formatDate(transport.actualArrival) }}</div>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Summary stats -->
+  <mat-card class="stats-card" *ngIf="stats">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-value">{{ stats.maxSpeed }} <span class="stat-unit">km/h</span></div>
+        <div class="stat-label">Макс. скорост</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">📊</div>
+        <div class="stat-value">{{ stats.avgSpeed }} <span class="stat-unit">km/h</span></div>
+        <div class="stat-label">Средна скорост</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">🌡️</div>
+        <div class="stat-value">{{ stats.minTemp }} <span class="stat-unit">°C</span></div>
+        <div class="stat-label">Мин. температура</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">🌡️</div>
+        <div class="stat-value">{{ stats.maxTemp }} <span class="stat-unit">°C</span></div>
+        <div class="stat-label">Макс. температура</div>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Main content -->
+  <div class="main-grid">
+    <!-- Left: Routes panel -->
+    <div class="routes-panel">
+      <div class="panel-header">
+        <h3>Маршрути</h3>
+      </div>
+
+      <div class="empty-routes" *ngIf="routes.length === 0">
+        <p>Няма маршрути. Добавете маршрут за да проследите движението.</p>
+      </div>
+
+      <div
+        class="route-item"
+        *ngFor="let r of routes"
+        [class.selected]="selectedRoute?.id === r.id"
+        (click)="selectRoute(r)"
+      >
+        <div class="route-item-top">
+          <span class="route-icon">🗺️</span>
+          <span class="route-id">Маршрут #{{ r.id }}</span>
+          <app-status-badge [status]="r.status"></app-status-badge>
+        </div>
+        <div class="route-item-details">
+          <div>🧑 {{ driverName(r.driverId) }}</div>
+          <div>🚛 {{ vehicleName(r.vehicleId) }}</div>
+          <div *ngIf="r.avgSpeed">⚡ Ср. скорост: {{ r.avgSpeed | number:'1.0-0' }} km/h</div>
+          <div *ngIf="r.distance">📏 Дистанция: {{ r.distance }} km</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Map -->
+    <div class="map-telem-panel">
+      <mat-card class="map-card">
+        <app-map-view></app-map-view>
+      </mat-card>
+
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading-center">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

@@ -1,0 +1,14 @@
+.full-width { width: 100%; margin-bottom: 8px; }
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 10px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.preset-label { font-size: 13px; color: #666; margin-right: 4px; }

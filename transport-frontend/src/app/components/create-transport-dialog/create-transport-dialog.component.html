@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>Нов транспорт</h2>
+
+<mat-dialog-content>
+  <div class="presets">
+    <span class="preset-label">Бърз избор:</span>
+    <button mat-stroked-button *ngFor="let r of demoRoutes" (click)="applyPreset(r)" type="button">
+      {{ r }}
+    </button>
+  </div>
+
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Начална точка</mat-label>
+      <input matInput formControlName="origin" placeholder="напр. София">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Крайна точка</mat-label>
+      <input matInput formControlName="destination" placeholder="напр. Пловдив">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Планирано тръгване</mat-label>
+      <input matInput type="datetime-local" formControlName="plannedDeparture">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Планирано пристигане</mat-label>
+      <input matInput type="datetime-local" formControlName="plannedArrival">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Отказ</button>
+  <button mat-raised-button color="primary" (click)="submit()" [disabled]="form.invalid">
+    Създай
+  </button>
+</mat-dialog-actions>

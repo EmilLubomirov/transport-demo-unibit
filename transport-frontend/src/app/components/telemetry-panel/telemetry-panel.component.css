@@ -1,0 +1,78 @@
+.telemetry-panel {
+  padding: 12px;
+}
+
+.telem-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.telem-item {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 12px 16px;
+  text-align: center;
+  min-width: 100px;
+  flex: 1;
+  border: 1px solid #e0e0e0;
+  transition: box-shadow 0.3s;
+}
+
+.telem-item.coords {
+  flex: 2;
+}
+
+.telem-icon {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.telem-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a237e;
+  margin-bottom: 2px;
+}
+
+.telem-value.coords-val {
+  font-size: 16px;
+  font-family: monospace;
+}
+
+.telem-unit {
+  font-size: 12px;
+  font-weight: 400;
+  color: #666;
+}
+
+.telem-label {
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.telem-value.na     { color: #bbb; font-weight: 400; }
+.telem-value.on     { color: #2e7d32; }
+.telem-value.off    { color: #c62828; }
+.telem-value.warning { color: #e65100; }
+
+.no-telemetry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  color: #bbb;
+  gap: 8px;
+}
+
+.no-telemetry .material-icons { font-size: 40px; }
+.no-telemetry p { margin: 0; font-size: 14px; }
+
+.telem-update {
+  margin-top: 10px;
+  font-size: 11px;
+  color: #999;
+  text-align: right;
+}

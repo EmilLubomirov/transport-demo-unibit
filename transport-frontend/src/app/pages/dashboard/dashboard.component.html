@@ -1,0 +1,120 @@
+<div class="dashboard-container">
+  <!-- Stats -->
+  <div class="stats-row">
+    <mat-card class="stat-card">
+      <div class="stat-number">{{ transports.length }}</div>
+      <div class="stat-label">Общо транспорти</div>
+    </mat-card>
+    <mat-card class="stat-card planned">
+      <div class="stat-number">{{ statPlanned }}</div>
+      <div class="stat-label">Планирани</div>
+    </mat-card>
+    <mat-card class="stat-card active">
+      <div class="stat-number">{{ statInProgress }}</div>
+      <div class="stat-label">В движение</div>
+    </mat-card>
+    <mat-card class="stat-card completed">
+      <div class="stat-number">{{ statCompleted }}</div>
+      <div class="stat-label">Завършени</div>
+    </mat-card>
+  </div>
+
+  <!-- Demo banner -->
+  <mat-card class="demo-banner">
+    <div class="demo-banner-content">
+      <div class="demo-banner-text">
+        <div class="demo-banner-title">🚛 Интерактивно демо</div>
+        <div class="demo-banner-sub">Проследете транспортна операция от планиране до пристигане в реално време</div>
+      </div>
+      <button mat-raised-button color="accent" routerLink="/demo" class="demo-banner-btn">
+        <mat-icon>play_circle</mat-icon> Стартирай демото
+      </button>
+    </div>
+  </mat-card>
+
+  <!-- Toolbar -->
+  <div class="list-header">
+    <h2>Транспортни операции</h2>
+    <div class="list-actions">
+      <button mat-stroked-button color="primary" (click)="load()">
+        <mat-icon>refresh</mat-icon> Обнови
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-row" *ngIf="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <!-- Empty state -->
+  <div class="empty-state" *ngIf="!loading && dataSource.data.length === 0">
+    <span style="font-size:48px">📦</span>
+    <p>Няма транспорти. <a routerLink="/demo">Стартирайте демото</a>, за да създадете такъв.</p>
+  </div>
+
+  <!-- Transport table -->
+  <mat-card class="table-card" *ngIf="!loading && dataSource.data.length > 0">
+    <table mat-table [dataSource]="dataSource" class="transport-table">
+
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <td mat-cell *matCellDef="let t">{{ t.id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="route">
+        <th mat-header-cell *matHeaderCellDef>Маршрут</th>
+        <td mat-cell *matCellDef="let t">
+          <span class="route-cell">🚛 {{ t.origin }} → {{ t.destination }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Статус</th>
+        <td mat-cell *matCellDef="let t">
+          <app-status-badge [status]="t.status"></app-status-badge>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="plannedDeparture">
+        <th mat-header-cell *matHeaderCellDef>Планирано тръгване</th>
+        <td mat-cell *matCellDef="let t">{{ formatDate(t.plannedDeparture) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="plannedArrival">
+        <th mat-header-cell *matHeaderCellDef>Планирано пристигане</th>
+        <td mat-cell *matCellDef="let t">{{ formatDate(t.plannedArrival) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actualDeparture">
+        <th mat-header-cell *matHeaderCellDef>Тръгване</th>
+        <td mat-cell *matCellDef="let t">{{ formatDate(t.actualDeparture) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actualArrival">
+        <th mat-header-cell *matHeaderCellDef>Пристигане</th>
+        <td mat-cell *matCellDef="let t">{{ formatDate(t.actualArrival) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let t">
+          <button mat-button color="primary" (click)="openDetail(t.id)">
+            Детайли <mat-icon inline>arrow_forward</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let t; columns: displayedColumns;"
+          class="table-row"
+          (click)="openDetail(t.id)"
+          (keydown.enter)="openDetail(t.id)"></tr>
+    </table>
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 25, 50]"
+      [pageSize]="5"
+      showFirstLastButtons>
+    </mat-paginator>
+  </mat-card>
+</div>

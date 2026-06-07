@@ -1,0 +1,221 @@
+<div class="wizard-page">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div class="header-left">
+      <button mat-icon-button routerLink="/" matTooltip="Към таблото">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div>
+        <h1>Демо — Транспортна операция</h1>
+      </div>
+    </div>
+    <div class="header-right">
+      <mat-button-toggle-group [(ngModel)]="mode" (change)="resetDemo()">
+        <mat-button-toggle value="auto">
+          <mat-icon>play_circle</mat-icon> Автоматично
+        </mat-button-toggle>
+        <mat-button-toggle value="manual">
+          <mat-icon>tune</mat-icon> Ръчно
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  </div>
+
+  <!-- Route selector -->
+  <mat-card class="route-selector-card">
+    <div class="route-selector-content">
+      <span class="selector-label">🗺️ Изберете маршрут:</span>
+      <div class="route-buttons">
+        <button
+          mat-stroked-button
+          *ngFor="let key of routeKeys"
+          [class.active-route]="selectedRouteKey === key"
+          (click)="applyRoutePreset(key)"
+          [disabled]="isRunning"
+        >{{ key }}</button>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Main layout -->
+  <div class="wizard-body">
+
+    <!-- LEFT: Steps panel -->
+    <div class="steps-panel">
+
+      <!-- AUTO mode -->
+      <ng-container *ngIf="mode === 'auto'">
+        <div class="auto-controls">
+          <button
+            mat-raised-button
+            color="primary"
+            class="start-btn"
+            (click)="runAuto()"
+            [disabled]="isRunning"
+          >
+            <mat-icon>play_arrow</mat-icon>
+            {{ isRunning ? 'Изпълнява се...' : 'Старт на демото' }}
+          </button>
+          <button mat-stroked-button (click)="resetDemo()" [disabled]="isRunning">
+            <mat-icon>restart_alt</mat-icon> Нов
+          </button>
+        </div>
+        <p class="auto-hint">Всички стъпки се изпълняват автоматично с анимация на картата.</p>
+      </ng-container>
+
+      <!-- MANUAL mode: Step 0 -->
+      <div class="manual-step-form" *ngIf="mode === 'manual' && steps[0].status !== 'done'">
+        <h4>Стъпка 1: Транспорт</h4>
+        <form [formGroup]="transportForm">
+          <mat-form-field appearance="outline" class="full-w">
+            <mat-label>Начална точка</mat-label>
+            <input matInput formControlName="origin">
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-w">
+            <mat-label>Крайна точка</mat-label>
+            <input matInput formControlName="destination">
+          </mat-form-field>
+        </form>
+        <button mat-raised-button color="primary"
+          (click)="manualStepCreateTransport()"
+          [disabled]="isRunning || transportForm.invalid">
+          <mat-spinner *ngIf="isRunning && steps[0].status === 'loading'" diameter="18"></mat-spinner>
+          Създай транспорт
+        </button>
+      </div>
+
+      <!-- MANUAL mode: Step 1 -->
+      <div class="manual-step-form"
+        *ngIf="mode === 'manual' && steps[0].status === 'done' && steps[1].status !== 'done'">
+        <h4>Стъпка 2: Маршрут</h4>
+        <form [formGroup]="routeForm">
+          <mat-form-field appearance="outline" class="full-w">
+            <mat-label>Водач</mat-label>
+            <mat-select formControlName="driverId">
+              <mat-option *ngFor="let d of drivers" [value]="d.id">{{ d.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-w">
+            <mat-label>Превозно средство</mat-label>
+            <mat-select formControlName="vehicleId">
+              <mat-option *ngFor="let v of vehicles" [value]="v.id">{{ v.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+        <button mat-raised-button color="primary"
+          (click)="manualStepCreateRoute()"
+          [disabled]="isRunning">
+          Създай маршрут
+        </button>
+      </div>
+
+      <!-- MANUAL mode: Step 2 -->
+      <div class="manual-step-form"
+        *ngIf="mode === 'manual' && steps[1].status === 'done' && steps[2].status !== 'done'">
+        <h4>Стъпка 3: Тръгване</h4>
+        <p class="step-hint">Изпраща събитие за тръгване — системата засича потеглянето.</p>
+        <button mat-raised-button color="accent"
+          (click)="manualStepEngineOn()"
+          [disabled]="isRunning">
+          🚀 Регистрирай тръгване
+        </button>
+      </div>
+
+      <!-- MANUAL mode: Step 3 -->
+      <div class="manual-step-form"
+        *ngIf="mode === 'manual' && steps[2].status === 'done' && steps[3].status !== 'done'">
+        <h4>Стъпка 4: GPS точка</h4>
+        <p class="step-hint">
+          Точка {{ currentWaypointIndex }}/{{ currentWaypoints.length }}:
+          <strong>{{ currentWaypointIndex < currentWaypoints.length ? currentWaypoints[currentWaypointIndex].label : 'Край' }}</strong>
+        </p>
+        <button mat-raised-button color="primary"
+          (click)="manualStepSendGps()"
+          [disabled]="isRunning || currentWaypointIndex >= currentWaypoints.length">
+          📡 Изпрати GPS точка
+        </button>
+        <button mat-stroked-button color="accent" class="skip-btn"
+          *ngIf="currentWaypointIndex > 0"
+          (click)="manualStepGeofence()"
+          [disabled]="isRunning">
+          🏁 Регистрирай пристигане
+        </button>
+      </div>
+
+      <!-- MANUAL mode: Step 4 -->
+      <div class="manual-step-form"
+        *ngIf="mode === 'manual' && steps[3].status === 'done' && steps[4].status !== 'done'">
+        <h4>Стъпка 5: Пристигане</h4>
+        <p class="step-hint">Изпраща събитие за пристигане — системата регистрира достигането на дестинацията.</p>
+        <button mat-raised-button color="accent"
+          (click)="manualStepGeofence()"
+          [disabled]="isRunning">
+          🏁 Регистрирай пристигане
+        </button>
+      </div>
+
+      <!-- Steps list -->
+      <div class="steps-list">
+        <div
+          class="step-row"
+          *ngFor="let s of steps; let i = index"
+          [class.step-active]="currentStep === i"
+          [class.step-done]="s.status === 'done'"
+          [class.step-error]="s.status === 'error'"
+        >
+          <div class="step-indicator">
+            <mat-spinner *ngIf="s.status === 'loading'" diameter="24"></mat-spinner>
+            <span *ngIf="s.status === 'done'" class="step-check">✓</span>
+            <span *ngIf="s.status === 'idle' || s.status === 'error'" class="step-num">{{ i + 1 }}</span>
+          </div>
+          <div class="step-info">
+            <div class="step-icon">{{ s.icon }}</div>
+            <div>
+              <div class="step-title">{{ s.title }}</div>
+              <div class="step-sub">{{ s.subtitle }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading message -->
+      <div class="loading-msg" *ngIf="loadingMessage">
+        <mat-spinner diameter="16"></mat-spinner>
+        {{ loadingMessage }}
+      </div>
+
+      <!-- Error -->
+      <div class="error-box" *ngIf="errorMessage">
+        <mat-icon>error</mat-icon> {{ errorMessage }}
+      </div>
+
+      <!-- Transport ID info -->
+      <div class="result-info" *ngIf="transportId">
+        <div>Транспорт ID: <strong>#{{ transportId }}</strong></div>
+        <div *ngIf="routeId">Маршрут ID: <strong>#{{ routeId }}</strong></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Map + Telemetry -->
+    <div class="map-panel">
+
+      <!-- Telemetry -->
+      <mat-card class="telem-card">
+        <mat-card-header>
+          <mat-card-title>
+            <span class="live-dot" [class.live-dot--active]="latestTelemetry"></span> Телеметрия на живо
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <app-telemetry-panel [data]="latestTelemetry"></app-telemetry-panel>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="map-card">
+        <app-map-view></app-map-view>
+      </mat-card>
+
+    </div>
+  </div>
+</div>

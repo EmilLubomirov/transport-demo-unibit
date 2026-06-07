@@ -1,0 +1,118 @@
+.dashboard-container {
+  padding: 20px 12px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.stats-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 140px;
+  text-align: center;
+  padding: 20px 16px;
+  cursor: default;
+}
+
+.stat-number {
+  font-size: 42px;
+  font-weight: 700;
+  color: #1a237e;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #666;
+  margin-top: 6px;
+}
+
+.stat-card.planned .stat-number   { color: #1565c0; }
+.stat-card.active .stat-number    { color: #e65100; }
+.stat-card.completed .stat-number { color: #2e7d32; }
+
+.demo-banner {
+  margin-bottom: 28px;
+  background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+  color: white;
+}
+
+.demo-banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 8px 4px;
+  flex-wrap: wrap;
+}
+
+.demo-banner-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.demo-banner-sub {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.demo-banner-btn {
+  white-space: nowrap;
+  font-size: 15px;
+  padding: 0 24px;
+  height: 44px;
+}
+
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.list-header h2 { margin: 0; font-size: 20px; color: #333; }
+
+.list-actions { display: flex; gap: 12px; }
+
+.loading-row {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #888;
+}
+
+.empty-state p { margin-top: 12px; font-size: 15px; }
+.empty-state a { color: #3f51b5; }
+
+.table-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.transport-table {
+  width: 100%;
+}
+
+.table-row {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.table-row:hover {
+  background: #f5f5f5;
+}
+
+.route-cell {
+  font-weight: 500;
+}

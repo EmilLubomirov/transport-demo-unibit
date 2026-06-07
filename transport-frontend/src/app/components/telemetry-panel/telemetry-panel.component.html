@@ -1,0 +1,68 @@
+<div class="telemetry-panel" *ngIf="data; else noData">
+  <div class="telem-grid">
+    <div class="telem-item">
+      <div class="telem-icon speed-icon">🚀</div>
+      <div class="telem-value">{{ data.speed | number:'1.0-0' }} <span class="telem-unit">km/h</span></div>
+      <div class="telem-label">Скорост</div>
+    </div>
+    <div class="telem-item">
+      <div class="telem-icon">🌡️</div>
+      <div class="telem-value">{{ data.temperature | number:'1.0-1' }} <span class="telem-unit">°C</span></div>
+      <div class="telem-label">Температура</div>
+    </div>
+    <div class="telem-item">
+      <div class="telem-icon">⚙️</div>
+      <div class="telem-value" [class.on]="data.engineOn" [class.off]="!data.engineOn">
+        {{ data.engineOn ? 'ВКЛ' : 'ИЗКЛ' }}
+      </div>
+      <div class="telem-label">Двигател</div>
+    </div>
+    <div class="telem-item">
+      <div class="telem-icon">🚪</div>
+      <div class="telem-value" [class.warning]="data.doorOpen">
+        {{ data.doorOpen ? 'ОТВОРЕНА' : 'ЗАТВОРЕНА' }}
+      </div>
+      <div class="telem-label">Врата</div>
+    </div>
+    <div class="telem-item coords">
+      <div class="telem-icon">📍</div>
+      <div class="telem-value coords-val">{{ data.lat | number:'1.4-4' }}, {{ data.lon | number:'1.4-4' }}</div>
+      <div class="telem-label">GPS координати</div>
+    </div>
+  </div>
+  <div class="telem-update" *ngIf="lastUpdate">
+    Последна актуализация: {{ lastUpdate }}
+  </div>
+</div>
+
+<ng-template #noData>
+  <div class="telemetry-panel">
+    <div class="telem-grid">
+      <div class="telem-item">
+        <div class="telem-icon">🚀</div>
+        <div class="telem-value na">N/A</div>
+        <div class="telem-label">Скорост</div>
+      </div>
+      <div class="telem-item">
+        <div class="telem-icon">🌡️</div>
+        <div class="telem-value na">N/A</div>
+        <div class="telem-label">Температура</div>
+      </div>
+      <div class="telem-item">
+        <div class="telem-icon">⚙️</div>
+        <div class="telem-value na">N/A</div>
+        <div class="telem-label">Двигател</div>
+      </div>
+      <div class="telem-item">
+        <div class="telem-icon">🚪</div>
+        <div class="telem-value na">N/A</div>
+        <div class="telem-label">Врата</div>
+      </div>
+      <div class="telem-item coords">
+        <div class="telem-icon">📍</div>
+        <div class="telem-value na coords-val">N/A</div>
+        <div class="telem-label">GPS координати</div>
+      </div>
+    </div>
+  </div>
+</ng-template>

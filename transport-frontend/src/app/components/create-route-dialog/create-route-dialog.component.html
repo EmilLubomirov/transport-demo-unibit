@@ -1,0 +1,41 @@
+<h2 mat-dialog-title>Нов маршрут за транспорт #{{ data.transportId }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Водач</mat-label>
+      <mat-select formControlName="driverId">
+        <mat-option *ngFor="let d of drivers" [value]="d.id">{{ d.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Превозно средство</mat-label>
+      <mat-select formControlName="vehicleId">
+        <mat-option *ngFor="let v of vehicles" [value]="v.id">{{ v.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Начална точка</mat-label>
+      <input matInput formControlName="startPoint">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Крайна точка</mat-label>
+      <input matInput formControlName="endPoint">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Разстояние (км)</mat-label>
+      <input matInput type="number" formControlName="distance">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Отказ</button>
+  <button mat-raised-button color="primary" (click)="submit()" [disabled]="form.invalid">
+    Създай маршрут
+  </button>
+</mat-dialog-actions>
