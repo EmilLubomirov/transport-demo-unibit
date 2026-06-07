@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+            allowedHeaders: "*"
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: transport-service-api
+          uri: lb://transport-service
+          predicates:
+            - Path=/api/v1/**
+        - id: transport-service-swagger-ui
+          uri: lb://transport-service
+          predicates:
+            - Path=/swagger-ui.html, /swagger-ui/**, /v3/api-docs/**
